@@ -29,6 +29,9 @@ export class Eleitor {
   })
   status!: StatusEnum;
 
+  @Column({ default: false }) 
+  votou!: boolean; 
+
   @OneToMany(() => Presenca, (presenca) => presenca.eleitor)
   presencas!: Presenca[];
 }

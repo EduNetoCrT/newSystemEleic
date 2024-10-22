@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn,Column } from "typeorm";
 import { Eleitor } from "./Eleitor";
 import { Sessao } from "./Sessao";
 import { User } from "./User";
@@ -19,4 +19,7 @@ export class Presenca {
 
   @CreateDateColumn()
   created_at!: Date;
+
+  @Column()
+  dataPresenca!: Date
 }

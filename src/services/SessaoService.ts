@@ -13,9 +13,9 @@ export class SessaoService {
         return this.sessaoRepository.find();
     }
 
-    // async getSessaoById(id: string): Promise<Sessao | null> {
-    //     return this.sessaoRepository.findOne({ where: { id } });
-    // }
+    async getSessaoById(id: string): Promise<Sessao | null> {
+        return this.sessaoRepository.findOne({ where: { id } });
+    }
 
     async createSessao(local: string, numero: string): Promise<Sessao> {
         const sessao = this.sessaoRepository.create({ local, numero });

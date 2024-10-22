@@ -49,12 +49,15 @@ export class PresencaController {
         try {
             const { sessaoId, eleitorMatricula } = req.body;
             const newPresenca = await this.presencaService.createPresenca(sessaoId, eleitorMatricula);
-            res.status(201).json(newPresenca);
+            res.status(201).json({
+                message: `Presença registrada com sucesso para o eleitor ${eleitorMatricula} na sessão ${newPresenca.sessao.local} - ${newPresenca.sessao.numero} em ${newPresenca.dataPresenca.toISOString()}.`,
+                data: newPresenca,
+            });
         } catch (error) {
-            console.log(error)
-            next(error)
+            console.log(error);
+            next(error);
         }
-    }
+    };
 
     buscarEleitorPorMatricula = async (req: Request, res: Response): Promise<void> => {
         try {

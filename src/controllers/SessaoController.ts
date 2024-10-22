@@ -17,18 +17,18 @@ export class SessaoController {
         }
     }
 
-    // getSessaoById = async (req: Request, res: Response): Promise<void> => {
-    //     try {
-    //         const sessao = await this.sessaoService.getSessaoById(req.params.id);
-    //         if (sessao) {
-    //             res.json(sessao);
-    //         } else {
-    //             res.status(404).json({ message: "Sessão não encontrada" });
-    //         }
-    //     } catch (error) {
-    //         res.status(500).json({ message: "Erro ao buscar sessão" });
-    //     }
-    // }
+    getSessaoById = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const sessao = await this.sessaoService.getSessaoById(req.params.id);
+            if (sessao) {
+                res.json(sessao);
+            } else {
+                res.status(404).json({ message: "Sessão não encontrada" });
+            }
+        } catch (error) {
+            res.status(500).json({ message: "Erro ao buscar sessão" });
+        }
+    }
 
     createSessao = async (req: Request, res: Response): Promise<void> => {
         try {
