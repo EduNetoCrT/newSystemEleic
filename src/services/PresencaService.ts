@@ -20,7 +20,7 @@ export class PresencaService {
   // Busca todas as presenças com as relações eleitor e sessão
   async getAllPresencas(): Promise<Presenca[]> {
     return this.presencaRepository.find({ relations: ["sessao", "eleitor"] });
-  }
+}
 
   // Busca eleitor por matrícula e lança erro se não encontrado
   async buscarEleitorPorMatricula(matricula: string): Promise<Eleitor> {
@@ -35,18 +35,18 @@ export class PresencaService {
   }
 
   // Cria uma nova presença
-  async createPresenca(sessaoId: string, eleitorMatricula: string): Promise<Presenca> {
-    console.log(`Eleitor ID: ${eleitorMatricula}, Sessão ID: ${sessaoId}`);
+  async createPresenca(local: string, eleitorMatricula: string): Promise<Presenca> {
+    console.log(`Eleitor ID: ${eleitorMatricula}, Sessão Local: ${local}`);
 
     // Verifica se o eleitor já registrou presença hoje
-    await this.verificarPresencaEleitor(sessaoId, eleitorMatricula);
+    await this.verificarPresencaEleitor(local, eleitorMatricula);
 
-    // Busca a sessão e o eleitor
-    const sessao = await this.sessaoRepository.findOne({ where: { id: sessaoId } });
+    // Busca a sessão pelo local e o eleitor pela matrícula
+    const sessao = await this.sessaoRepository.findOne({ where: { local } });
     const eleitor = await this.buscarEleitorPorMatricula(eleitorMatricula);
 
     if (!sessao) {
-      throw new ErrorApp({ message: "Sessão não encontrada", status: 404 });
+      throw new ErrorApp({ message: "Sessão não encontrada para o local informado", status: 404 });
     }
 
     // Verifica se o eleitor está inapto
@@ -62,13 +62,22 @@ export class PresencaService {
     await this.eleitorRepository.save(eleitor); // Salva a atualização no banco
 
     // Cria a presença
-    const presenca = this.presencaRepository.create({ sessao, eleitor, dataPresenca: new Date() });
-    return this.presencaRepository.save(presenca);
+    const presenca = this.presencaRepository.create({
+      sessao,
+      eleitor,
+      dataPresenca: new Date(),
+    });
+
+    // Salva a presença no banco
+    const presencaSalva = await this.presencaRepository.save(presenca);
+
+    // Retorna a presença salva com a sessão completa
+    return presencaSalva;
   }
 
   // Verifica se o eleitor já registrou presença na sessão no dia atual
   private async verificarPresencaEleitor(
-    sessaoId: string,
+    local: string,
     eleitorMatricula: string
   ): Promise<void> {
     const hoje = new Date();
@@ -79,6 +88,7 @@ export class PresencaService {
     const presencaHoje = await this.presencaRepository.findOne({
       where: {
         eleitor: { matricula: eleitorMatricula },
+        sessao: { local },
         dataPresenca: Between(inicioHoje, fimHoje),
       },
       relations: ["sessao"],

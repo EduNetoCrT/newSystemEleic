@@ -5,7 +5,7 @@
   "username": "admineleicao",
   "password": "Senha@edu9125",
   "database": "eleicao_teste",
-  "synchronize": false,
+  "synchronize": true,
   "logging": true,
   "entities": ["src/entity/**/*.ts"],
   "migrations": ["src/database/migration/**/*.ts"],

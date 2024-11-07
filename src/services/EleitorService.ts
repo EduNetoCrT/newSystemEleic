@@ -2,6 +2,7 @@ import { Repository } from "typeorm";
 import { Eleitor, StatusEnum } from "../entities/Eleitor";
 import { AppDataSource } from "../database/data-source";
 import { ErrorApp } from "../utils/ErrorApp";
+import { Not } from "typeorm";
 
 export class EleitorService {
   private eleitorRepository: Repository<Eleitor>;
@@ -27,6 +28,7 @@ export class EleitorService {
     cpf: string,
     patente: string,
     status: StatusEnum
+    
   ): Promise<Eleitor> {
     try {
       // Verifica se já existe um eleitor com a mesma matrícula
@@ -109,6 +111,5 @@ export class EleitorService {
     await this.eleitorRepository.save(eleitor);
   }
 
-
-
+ 
 }

@@ -1,4 +1,6 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
+// src/entities/Eleitor.ts
+
+import { Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Presenca } from "./Presenca";
 
 export enum StatusEnum {
@@ -8,7 +10,10 @@ export enum StatusEnum {
 
 @Entity()
 export class Eleitor {
-  @PrimaryColumn() // A matrícula será a chave primária
+  @PrimaryGeneratedColumn() // ID com incremento automático
+  id!: number;
+
+  @PrimaryColumn() // A matrícula permanece como chave primária
   matricula!: string;
 
   @Column()
@@ -29,8 +34,8 @@ export class Eleitor {
   })
   status!: StatusEnum;
 
-  @Column({ default: false }) 
-  votou!: boolean; 
+  @Column({ default: false })
+  votou!: boolean;
 
   @OneToMany(() => Presenca, (presenca) => presenca.eleitor)
   presencas!: Presenca[];
