@@ -4,16 +4,18 @@ import { Eleitor } from "../entities/Eleitor";
 import { Presenca } from "../entities/Presenca";
 import { Sessao } from "../entities/Sessao";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const AppDataSource = new DataSource({
-  type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "admineleicao",
-  password: "Senha@edu9125",
-  database: "eleicao_teste",
+  type: isProduction ? "postgres" : "sqlite",
+  host: isProduction ? "localhost" : undefined,
+  port: isProduction ? 5432 : undefined,
+  username: isProduction ? "admineleicao" : undefined,
+  password: isProduction ? "Senha@edu9125" : undefined,
+  database: isProduction ? "eleicao_teste" : "eleicao_dev.sqlite",
   synchronize: true,
-  logging: false,
-  entities: [User, Eleitor, Presenca,  Sessao], 
+  logging: isProduction,
+  entities: [User, Eleitor, Presenca, Sessao],
   migrations: ["src/database/migrations/**/*.ts"],
   subscribers: [],
 });

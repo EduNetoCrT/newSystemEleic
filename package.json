@@ -19,6 +19,7 @@
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.6.5",
+    "sqlite3": "^5.1.7",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
@@ -34,12 +35,16 @@
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "start": "NODE_ENV=production node dist/server.js",
+    "start:dev": "NODE_ENV=development node dist/server.js",
+    "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-    "migration:run": "yarn typeorm migration:run",
-    "migration:generate": "yarn typeorm migration:generate -n",
-    "migration:revert": "yarn typeorm migration:revert"
+    "migration:run": "NODE_ENV=production yarn typeorm migration:run",
+    "migration:run:dev": "NODE_ENV=development yarn typeorm migration:run",
+    "migration:generate": "NODE_ENV=production yarn typeorm migration:generate -n",
+    "migration:generate:dev": "NODE_ENV=development yarn typeorm migration:generate -n",
+    "migration:revert": "NODE_ENV=production yarn typeorm migration:revert",
+    "migration:revert:dev": "NODE_ENV=development yarn typeorm migration:revert"
   }
 }

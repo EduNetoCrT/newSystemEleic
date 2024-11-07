@@ -13,7 +13,7 @@ export class Eleitor {
   @PrimaryGeneratedColumn() // ID com incremento automático
   id!: number;
 
-  @PrimaryColumn() // A matrícula permanece como chave primária
+  @Column() // A matrícula permanece como chave primária
   matricula!: string;
 
   @Column()
@@ -28,8 +28,7 @@ export class Eleitor {
   patente!: string;
 
   @Column({
-    type: "enum",
-    enum: StatusEnum,
+    type: "text",
     default: StatusEnum.APTO,
   })
   status!: StatusEnum;
