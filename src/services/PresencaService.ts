@@ -17,6 +17,21 @@ export class PresencaService {
     this.eleitorRepository = AppDataSource.getRepository(Eleitor);
   }
 
+  async getPresencaCountBySessao(): Promise<{ sessaoId: number; local: string; presencaCount: number }[]> {
+    const query = await this.presencaRepository
+      .createQueryBuilder("presenca")
+      .leftJoinAndSelect("presenca.sessao", "sessao")
+      .select("sessao.id", "sessaoId")
+      .addSelect("sessao.local", "local")
+      .addSelect("COUNT(presenca.id)", "presencaCount")
+      .groupBy("sessao.id")
+      .addGroupBy("sessao.local")
+      .orderBy("sessao.id", "ASC") // Ordena pelo ID da sessão em ordem crescente
+      .getRawMany();
+
+    return query;
+  }
+
   // Busca todas as presenças com as relações eleitor e sessão
   async getAllPresencas(): Promise<Presenca[]> {
     return this.presencaRepository.find({ relations: ["sessao", "eleitor"] });

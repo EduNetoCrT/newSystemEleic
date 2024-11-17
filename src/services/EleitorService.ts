@@ -1,8 +1,9 @@
+// src/services/EleitorService.ts
+
 import { Repository } from "typeorm";
 import { Eleitor, StatusEnum } from "../entities/Eleitor";
 import { AppDataSource } from "../database/data-source";
 import { ErrorApp } from "../utils/ErrorApp";
-import { Not } from "typeorm";
 
 export class EleitorService {
   private eleitorRepository: Repository<Eleitor>;
@@ -27,8 +28,8 @@ export class EleitorService {
     nome: string,
     cpf: string,
     patente: string,
-    status: StatusEnum
-    
+    status: StatusEnum,
+    observacao?: string // Campo de observação opcional
   ): Promise<Eleitor> {
     try {
       // Verifica se já existe um eleitor com a mesma matrícula
@@ -46,6 +47,7 @@ export class EleitorService {
         cpf,
         patente,
         status,
+        observacao, // Inclui a observação ao criar o eleitor
       });
       return await this.eleitorRepository.save(eleitor);
     } catch (error) {
@@ -93,6 +95,7 @@ export class EleitorService {
     }
   }
 
+  // Método para atualizar o status de um eleitor pela matrícula
   async updateStatusByMatricula(
     matricula: string,
     status: StatusEnum
@@ -110,6 +113,4 @@ export class EleitorService {
     eleitor.status = status;
     await this.eleitorRepository.save(eleitor);
   }
-
- 
 }

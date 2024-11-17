@@ -37,6 +37,9 @@ export class Eleitor {
   @Column({ default: false })
   votou!: boolean;
 
+  @Column({ type: "text", nullable: true }) // Novo campo de observação
+  observacao?: string;
+
   @OneToMany(() => Presenca, (presenca) => presenca.eleitor)
   presencas!: Presenca[];
 }

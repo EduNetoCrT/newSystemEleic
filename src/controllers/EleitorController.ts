@@ -39,13 +39,14 @@ export class EleitorController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const { matricula, nome, cpf, patente, status } = req.body;
+      const { matricula, nome, cpf, patente, status, observacao } = req.body; // Incluindo observação no corpo da requisição
       const newEleitor = await this.eleitorService.createEleitor(
         matricula,
         nome,
         cpf,
         patente,
-        status
+        status,
+        observacao // Passando o valor de observação para o serviço
       );
 
       res.status(201).json(newEleitor);
@@ -61,7 +62,7 @@ export class EleitorController {
         matricula,
         nome,
         patente,
-        status
+        status,
       );
       res.status(204).send();
     } catch (error) {
@@ -88,5 +89,4 @@ export class EleitorController {
       next(error);
     }
   };
- 
 }

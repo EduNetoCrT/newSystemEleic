@@ -32,6 +32,7 @@ router.put("/eleitores/status", eleitorController.updateStatus);
 router.get("/presencas", presencaController.getAllPresencas);
 router.get("/eleitor/:id", presencaController.buscarEleitorPorMatricula);
 router.post("/presencas", presencaController.createPresenca);
+router.get("/presencas/contagem-por-sessao", presencaController.getPresencaCountBySessao);
 
 // Rotas para Sessao
 router.get("/sessoes", sessaoController.getAllSessoes);

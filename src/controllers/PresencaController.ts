@@ -8,6 +8,15 @@ export class PresencaController {
         this.presencaService = new PresencaService();
     }
 
+    getPresencaCountBySessao = async (req: Request, res: Response): Promise<void> => {
+        try {
+          const countData = await this.presencaService.getPresencaCountBySessao();
+          res.json(countData);
+        } catch (error) {
+          res.status(500).json({ message: "Erro ao obter contagem de presenças" });
+        }
+      };
+
     // Retorna todas as presenças com as relações eleitor e sessão
     getAllPresencas = async (req: Request, res: Response): Promise<void> => {
         try {
