@@ -82,11 +82,13 @@ export class EleitorController {
 
   updateStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { matricula, status } = req.body;
-      await this.eleitorService.updateStatusByMatricula(matricula, status);
-      res.status(204).send();
+      const { matricula, status, observacao } = req.body; // Adicionei o campo observacao
+      await this.eleitorService.updateStatusByMatricula(matricula, status, observacao);
+      res.status(204).send(); // HTTP 204 indica sucesso sem conteúdo no corpo
     } catch (error) {
       next(error);
     }
   };
+  
+  
 }

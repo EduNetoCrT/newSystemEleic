@@ -98,7 +98,8 @@ export class EleitorService {
   // Método para atualizar o status de um eleitor pela matrícula
   async updateStatusByMatricula(
     matricula: string,
-    status: StatusEnum
+    status: StatusEnum,
+    observacao?: string
   ): Promise<void> {
     const eleitor = await this.eleitorRepository.findOne({ where: { matricula } });
   
@@ -109,8 +110,14 @@ export class EleitorService {
       });
     }
   
-    // Atualiza apenas o status do eleitor
+    // Atualiza apenas os campos enviados
     eleitor.status = status;
+    if (observacao !== undefined) {
+      eleitor.observacao = observacao; // Atualiza a observação
+    }
+  
     await this.eleitorRepository.save(eleitor);
   }
+  
+  
 }
