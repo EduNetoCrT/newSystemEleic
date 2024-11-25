@@ -8,8 +8,8 @@ const candidatoService = new CandidatoService(candidatoRepository);
 export class CandidatoController {
   static async create(req: Request, res: Response): Promise<Response> {
     try {
-      const { nome, funcao, chapa } = req.body;
-      const candidato = await candidatoService.create({ nome, funcao, chapa });
+      const { nome, funcao, chapa, matricula } = req.body;
+      const candidato = await candidatoService.create({ nome, funcao, chapa, matricula });
       return res.status(201).json(candidato);
     } catch (error) {
       return res.status(400).json({ message: error.message });

@@ -1,5 +1,7 @@
 import { CandidatoRepository } from "../repositories/CandidatoRepository";
 import { Candidato } from "../entities/Candidato";
+import { validate } from "class-validator";
+import { plainToInstance } from "class-transformer";
 
 export class CandidatoService {
   private candidatoRepository: CandidatoRepository;
@@ -9,10 +11,17 @@ export class CandidatoService {
   }
 
   async create(data: Partial<Candidato>): Promise<Candidato> {
-    if (!data.nome || !data.funcao || !data.chapa) {
-      throw new Error("Nome, função e chapa são obrigatórios.");
+    const candidato = await this.candidatoRepository.create(data);
+
+    const errors = await validate(candidato);
+    if (errors.length > 0) {
+      throw new Error(errors.map((err) => Object.values(err.constraints || {})).join(", "));
     }
-    return this.candidatoRepository.create(data);
+
+    const savedCandidato = await this.candidatoRepository.save(candidato);
+
+    // Retorna o candidato formatado
+    return plainToInstance(Candidato, savedCandidato);
   }
 
   async getAll(): Promise<Candidato[]> {

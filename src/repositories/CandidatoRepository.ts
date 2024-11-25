@@ -11,7 +11,11 @@ export class CandidatoRepository {
 
   async create(data: Partial<Candidato>): Promise<Candidato> {
     const candidato = this.repository.create(data);
-    return this.repository.save(candidato);
+    return this.save(candidato);
+  }
+
+  async save(data: Candidato): Promise<Candidato> {
+    return this.repository.save(data);
   }
 
   async findAll(): Promise<Candidato[]> {
