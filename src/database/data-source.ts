@@ -5,15 +5,11 @@ import { Presenca } from "../entities/Presenca";
 import { Sessao } from "../entities/Sessao";
 
 export const AppDataSource = new DataSource({
-  type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "admineleicao",
-  password: "Senha@edu9125",
-  database: "eleicao_teste",
-  synchronize: true,
-  logging: false,
-  entities: [User, Eleitor, Presenca,  Sessao], 
-  migrations: ["src/database/migrations/**/*.ts"],
+  type: "sqlite", // Define o tipo de banco como SQLite
+  database: "eleicao_db.sqlite", // Nome do arquivo do banco de dados SQLite
+  synchronize: true, // Sincroniza as entidades automaticamente (apenas em desenvolvimento)
+  logging: false, // Define o nível de log
+  entities: [User, Eleitor, Presenca, Sessao], // Entidades usadas pelo TypeORM
+  migrations: ["src/database/migrations/**/*.ts"], // Migrations
   subscribers: [],
 });

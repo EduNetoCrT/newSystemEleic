@@ -37,9 +37,11 @@ const startServer = async () => {
   try {
     await connectToDatabase();
 
-    const PORT = env.SERVER_PORT || 3001;
+    const PORT = process.env.SERVER_PORT || 3001;
+    const HOST = process.env.SERVER_HOST || "http://localhost";
+
     app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
+      console.log(`Server is running on ${HOST}:${PORT}`);
     });
   } catch (error) {
     console.error("Error starting server", error);

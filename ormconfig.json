@@ -1,10 +1,6 @@
 {
-  "type": "postgres",
-  "host": "localhost",
-  "port": 5432,
-  "username": "admineleicao",
-  "password": "Senha@edu9125",
-  "database": "eleicao_teste",
+  "type": "sqlite",
+  "database": "eleicao_db.sqlite",
   "synchronize": true,
   "logging": true,
   "entities": ["src/entity/**/*.ts"],
