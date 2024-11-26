@@ -12,58 +12,62 @@ import { ResultadoController } from "./controllers/ResultadoController";
 
 export const router = Router();
 
+const authenticatedRoutes = Router();
+// Aplicar o middleware de autenticação a todas as rotas deste grupo
+authenticatedRoutes.use(authMiddleware);
+
 // Instanciando os controladores
 const eleitorController = new EleitorController();
 const presencaController = new PresencaController();
 const secaoController = new SecaoController();
-const authController = new AuthController(); // Instanciando o AuthController
+const authController = new AuthController();
+
+// Rota para login
+router.post("/login", authController.login); // Adicionando a rota de login
 
 // Rotas para User
-router.get("/users", UserController.getAllUsers);
-router.post("/users", UserController.createUser);
-router.delete("/users/:id", UserController.deleteUser);
+authenticatedRoutes.get("/users", UserController.getAllUsers);
+authenticatedRoutes.post("/users", UserController.createUser);
+authenticatedRoutes.delete("/users/:id", UserController.deleteUser);
+authenticatedRoutes.get("/profile", UserController.getUserProfile);
 
 // Rotas para Eleitor
-router.get("/eleitores", eleitorController.getAllEleitores);
-router.get("/eleitores/:matricula", eleitorController.getEleitorByMatricula);
-router.post("/eleitores", eleitorController.createEleitor);
-router.put("/eleitores/:matricula", eleitorController.updateEleitor);
-router.delete("/eleitores/:matricula", eleitorController.deleteEleitor);
-router.put("/eleitores/status", eleitorController.updateStatus);
+authenticatedRoutes.get("/eleitores", eleitorController.getAllEleitores);
+authenticatedRoutes.get("/eleitores/:matricula", eleitorController.getEleitorByMatricula);
+authenticatedRoutes.post("/eleitores", eleitorController.createEleitor);
+authenticatedRoutes.put("/eleitores/:matricula", eleitorController.updateEleitor);
+authenticatedRoutes.delete("/eleitores/:matricula", eleitorController.deleteEleitor);
+authenticatedRoutes.put("/eleitores/status", eleitorController.updateStatus);
 
 // Rotas para Presenca
 router.get("/presencas", presencaController.getAllPresencas);
-router.get("/eleitor/:id", presencaController.buscarEleitorPorMatricula);
-router.post("/presencas", presencaController.createPresenca);
 router.get(
   "/presencas/contagem-por-sessao",
   presencaController.getPresencaCountBySessao
 );
+authenticatedRoutes.get("/eleitor/:id", presencaController.buscarEleitorPorMatricula);
+authenticatedRoutes.post("/presencas", presencaController.createPresenca);
 
 // Rotas para Sessao
 router.get("/sessoes", secaoController.getAllSessoes);
-router.post("/sessoes", secaoController.createSessao);
-
-// Rota para login
-router.post("/login", authController.login); // Adicionando a rota de login
-router.get("/profile", authMiddleware, UserController.getUserProfile);
+authenticatedRoutes.post("/sessoes", secaoController.createSessao);
 
 // Rotas para Chapas
-router.post("/chapas", ChapaController.create);
-router.put("/chapas/:chapaId/candidatos", ChapaController.addCandidatos);
 router.get("/chapas", ChapaController.getAll);
-router.get("/chapas/:id", ChapaController.getById);
+authenticatedRoutes.get("/chapas/:id", ChapaController.getById);
+authenticatedRoutes.post("/chapas", ChapaController.create);
+authenticatedRoutes.put("/chapas/:chapaId/candidatos", ChapaController.addCandidatos);
 
 // Rotas para Candidato
-router.post("/candidatos", CandidatoController.create);
 router.get("/candidatos", CandidatoController.getAll);
 router.get("/candidatos/:id", CandidatoController.getById);
-router.put("/candidatos/:id", CandidatoController.update);
-router.delete("/candidatos/:id", CandidatoController.delete);
+authenticatedRoutes.post("/candidatos", CandidatoController.create);
+authenticatedRoutes.put("/candidatos/:id", CandidatoController.update);
+authenticatedRoutes.delete("/candidatos/:id", CandidatoController.delete);
 
 // Rotas para Votos
-router.post("/votos/candidato", VotoController.addVote);
-router.post("/votos", VotoController.addVotes);
+authenticatedRoutes.post("/votos/candidato", VotoController.addVote);
+authenticatedRoutes.post("/votos", VotoController.addVotes);
 router.get("/votos/candidato/:candidatoId", VotoController.getVotesByCandidato);
 
 // Rotas para Resultadods
@@ -71,5 +75,9 @@ router.get("/resultados", ResultadoController.getResultados);
 
 // Rotas para Sessao
 router.get("/secoes", secaoController.getAllSessoes);
-router.get("/secoes/:id", secaoController.getSessaoById);
-router.post("/secoes", secaoController.createSessao);
+authenticatedRoutes.get("/secoes/:id", secaoController.getSessaoById);
+authenticatedRoutes.post("/secoes", secaoController.createSessao);
+
+// Adicionar rotas protegidas ao router principal
+router.use(authenticatedRoutes);
+
