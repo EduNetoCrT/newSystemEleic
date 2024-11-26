@@ -16,6 +16,7 @@ export default class UserController {
   ): Promise<void> {
     try {
       const { email, name, password, secaoId } = req.body;
+      
       const newUser = await userService.createUser({
         password,
         email,
