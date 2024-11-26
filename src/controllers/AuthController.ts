@@ -21,7 +21,7 @@ export default class AuthController {
       }
 
       const token = jwt.sign(
-        { id: user.id, email: user.email, name: user.name, secao: user.secao },  // Incluindo name e secao
+        { id: user.id, email: user.email, name: user.name, secao: user.secao },
         process.env.JWT_SECRET!,
         { expiresIn: '1h' }
       );

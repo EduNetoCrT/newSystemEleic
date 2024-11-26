@@ -9,7 +9,7 @@ export class SecaoRepository {
     this.repository = AppDataSource.getRepository(Secao);
   }
 
-  async findById(id: number): Promise<Secao | null> {
+  async findById(id: string): Promise<Secao | null> {
     return this.repository.findOneBy({ id: "" + id });
   }
 

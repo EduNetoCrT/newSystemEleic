@@ -18,7 +18,7 @@ export class ChapaController {
 
   static async getAll(req: Request, res: Response): Promise<Response> {
     try {
-      const chapas = await chapaService.getAll();
+      const chapas = await chapaService.getAll();      
       return res.json(chapas);
     } catch (error) {
       return res.status(500).json({ message: error.message });

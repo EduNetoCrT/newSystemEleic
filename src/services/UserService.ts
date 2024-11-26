@@ -1,75 +1,68 @@
-import { Repository } from "typeorm";
+import * as bcrypt from "bcrypt";
+import { UserRepository } from "../repositories/UserRepository";
+import { SecaoRepository } from "../repositories/SecaoRepository";
 import { User } from "../entities/User";
-import { AppDataSource } from "../database/data-source";
-import { ErrorApp } from "../utils/ErrorApp";
-import bcrypt from "bcrypt";
 
 export class UserService {
-  private userRepository: Repository<User>;
+  private userRepository: UserRepository;
+  private secaoRepository: SecaoRepository;
 
-  constructor() {
-    this.userRepository = AppDataSource.getRepository(User);
+  constructor(
+    userRepository: UserRepository,
+    secaoRepository: SecaoRepository
+  ) {
+    this.userRepository = userRepository;
+    this.secaoRepository = secaoRepository;
   }
 
-  // Método para criar um novo usuário
-  async createUser(data: { email: string; name: string; password: string; secao: string }): Promise<User> {
-    try {
-      const existingUser = await this.userRepository.findOne({ where: { email: data.email } });
-      if (existingUser) {
-        throw new ErrorApp({
-          message: "Usuário com este e-mail já existe",
-          status: 409,
-        });
-      }
+  async createUser(data: Partial<User> & {secaoId: string}): Promise<User> {
+    const {
+      name,
+      email,
+      password,
+      secaoId
+    } = data;
 
-      const hashedPassword = await bcrypt.hash(data.password, 10);
-      const user = this.userRepository.create({ ...data, password: hashedPassword });
-      return await this.userRepository.save(user);
-    } catch (error) {
-      const msg = error.message || "Erro ao criar usuário";
-      throw new ErrorApp({ message: msg, status: 400 });
+    if (!name || !email || !password || !secaoId) {
+      throw new Error("Todos os campos obrigatórios devem ser preenchidos.");
     }
-  }
 
-  // Método para obter todos os usuários
-  async getAllUsers(): Promise<User[]> {
-    return this.userRepository.find();
-  }
+    const existingUser = await this.userRepository.findByEmail(email);
+    if (existingUser) {
+      throw new Error("E-mail já está em uso.");
+    }
 
-  // Método para obter um usuário por e-mail
-  async getUserByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
-  }
-
-  // Método para obter um usuário por ID
-  async getUserById(id: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { id } });
-  }
-
-  // Método para atualizar um usuário
-  async updateUser(id: string, data: { name?: string; email?: string; password?: string; secao?: string }): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { id } });
-
-    if (!user) {
-      throw new ErrorApp({ message: "Usuário não encontrado", status: 404 });
+    const secao = await this.secaoRepository.findById(secaoId);
+    if (!secao) {
+      throw new Error("Seção não encontrada.");
     }
 
     // Atualiza os dados do usuário
-    if (data.name) user.name = data.name;
-    if (data.email) user.email = data.email;
-    if (data.password) user.password = await bcrypt.hash(data.password, 10); // Atualiza a senha criptografada
-    if (data.secao) user.secao = data.secao; // Atualiza a seção
+    const passwordHashed = await bcrypt.hash(data.password, 10);
 
-    await this.userRepository.save(user);
+    const user = await this.userRepository.create({
+      name,
+      email,
+      password: passwordHashed,
+      secao,
+    });
+
     return user;
   }
 
-  // Método para deletar um usuário
-  async deleteUser(id: string): Promise<void> {
-    const result = await this.userRepository.delete({ id });
+  async getAllUsers(): Promise<User[]> {
+    return this.userRepository.findAll();
+  }
 
-    if (result.affected === 0) {
-      throw new ErrorApp({ message: "Usuário não encontrado para deletar", status: 404 });
+  async deleteUser(id: string): Promise<void> {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new Error("Usuário não encontrado.");
     }
+    await this.userRepository.delete(id);
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    return this.userRepository.findById(id);
   }
 }

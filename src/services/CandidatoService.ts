@@ -20,12 +20,12 @@ export class CandidatoService {
 
     const savedCandidato = await this.candidatoRepository.save(candidato);
 
-    // Retorna o candidato formatado
     return plainToInstance(Candidato, savedCandidato);
   }
 
   async getAll(): Promise<Candidato[]> {
-    return this.candidatoRepository.findAll();
+    const candidatos = await this.candidatoRepository.findAll();
+    return candidatos.map(candidato => plainToInstance(Candidato, candidato));
   }
 
   async getById(id: number): Promise<Candidato> {
@@ -33,7 +33,7 @@ export class CandidatoService {
     if (!candidato) {
       throw new Error("Candidato não encontrado.");
     }
-    return candidato;
+    return plainToInstance(Candidato, candidato);
   }
 
   async update(id: number, data: Partial<Candidato>): Promise<Candidato> {

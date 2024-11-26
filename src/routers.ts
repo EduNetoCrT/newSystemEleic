@@ -13,16 +13,15 @@ import { ResultadoController } from "./controllers/ResultadoController";
 export const router = Router();
 
 // Instanciando os controladores
-const userController = new UserController();
 const eleitorController = new EleitorController();
 const presencaController = new PresencaController();
 const secaoController = new SecaoController();
 const authController = new AuthController(); // Instanciando o AuthController
 
 // Rotas para User
-router.get("/users", userController.getAllUsers);
-router.post("/users", userController.createUser);
-router.delete("/users/:id", userController.deleteUser);
+router.get("/users", UserController.getAllUsers);
+router.post("/users", UserController.createUser);
+router.delete("/users/:id", UserController.deleteUser);
 
 // Rotas para Eleitor
 router.get("/eleitores", eleitorController.getAllEleitores);
@@ -47,7 +46,7 @@ router.post("/sessoes", secaoController.createSessao);
 
 // Rota para login
 router.post("/login", authController.login); // Adicionando a rota de login
-router.get("/profile", authMiddleware, userController.getUserProfile);
+router.get("/profile", authMiddleware, UserController.getUserProfile);
 
 // Rotas para Chapas
 router.post("/chapas", ChapaController.create);

@@ -16,6 +16,11 @@ export class VotoRepository {
     return this.repository.save(voto);
   }
 
+  async update(data: Partial<Voto>): Promise<Voto> {
+    return this.repository.save(data);
+  }
+
+
   async addVotesInTransaction(
     votos: { secaoId: number; quantidade: number; candidatoId: number }[],
     secaoRepository: SecaoRepository,
@@ -27,7 +32,7 @@ export class VotoRepository {
           const { secaoId, candidatoId, quantidade } = voto;
 
           // Validar se a seção existe
-          const secao = await secaoRepository.findById(secaoId);
+          const secao = await secaoRepository.findById("" + secaoId);
           if (!secao) {
             throw new Error(`Seção com ID ${secaoId} não encontrada.`);
           }
@@ -38,13 +43,28 @@ export class VotoRepository {
             throw new Error(`Candidato com ID ${candidatoId} não encontrado.`);
           }
 
-          // Criar o voto
-          const novoVoto = transactionalEntityManager.create(Voto, {
-            secao,
-            candidato,
-            quantidade,
+          // Verificar se o voto já existe
+          let existingVote = await transactionalEntityManager.findOne(Voto, {
+            where: {
+              secao: { id: "" + secaoId },
+              candidato: { id: candidatoId },
+            },
+            relations: ["secao", "candidato"],
           });
-          await transactionalEntityManager.save(novoVoto);
+
+          if (existingVote) {
+            // Sobrescrever a quantidade se já existir
+            existingVote.quantidade = quantidade;
+            await transactionalEntityManager.save(existingVote);
+          } else {
+            // Criar um novo registro se não existir
+            const novoVoto = transactionalEntityManager.create(Voto, {
+              secao,
+              candidato,
+              quantidade,
+            });
+            await transactionalEntityManager.save(novoVoto);
+          }
         }
       }
     );
@@ -53,7 +73,20 @@ export class VotoRepository {
   async findByCandidato(candidatoId: number): Promise<Voto[]> {
     return this.repository.find({
       where: { candidato: { id: candidatoId } },
-      relations: ["candidato"],
+      relations: ["candidato", "secao"], // Inclui a relação com a seção
+    });
+  }
+
+  async findByCandidatoAndSecao(
+    candidatoId: number,
+    secaoId: number
+  ): Promise<Voto | null> {
+    return this.repository.findOne({
+      where: {
+        candidato: { id: candidatoId },
+        secao: { id: "" + secaoId },
+      },
+      relations: ["candidato", "secao"], // Inclui relações
     });
   }
 }

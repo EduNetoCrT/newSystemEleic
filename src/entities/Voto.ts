@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique } from "typeorm";
 import { Candidato } from "./Candidato";
 import { Sessao as Secao } from "./Sessao";
 
@@ -10,9 +10,9 @@ export class Voto {
     @Column()
     quantidade: number;
 
-    @ManyToOne(() => Candidato, (candidato) => candidato.votos)
-    candidato: Candidato;
-
-    @ManyToOne(() => Secao, (secao) => secao.presencas, { eager: true }) // Carrega automaticamente a seção
+    @ManyToOne(() => Candidato, (candidato) => candidato.votos, { eager: true })
+    candidato!: Candidato;
+  
+    @ManyToOne(() => Secao, (secao) => secao.votos, { eager: true })
     secao!: Secao;
 }

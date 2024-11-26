@@ -5,8 +5,10 @@ import {
   Column,
   CreateDateColumn,
   OneToMany,
+  ManyToOne,
 } from "typeorm";
 import { Presenca } from "./Presenca";
+import { Sessao as Secao } from "./Sessao";
 
 @Entity("users")
 export class User {
@@ -27,11 +29,8 @@ export class User {
   @Column()
   password!: string;
 
-  @Column({
-    type: "varchar",
-    length: 50, // Ajuste o tamanho conforme necessário
-  })
-  secao!: string; // Novo campo 'secao'
+  @ManyToOne(() => Secao, (secao) => secao.users, { eager: true })
+  secao!: Secao;
 
   @CreateDateColumn()
   created_at!: Date;

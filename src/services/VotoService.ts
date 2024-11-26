@@ -26,7 +26,7 @@ export class VotoService {
     const { secaoId, quantidade, candidatoId } = data;
 
     // Validar se a seção existe
-    const secao = await this.secaoRepository.findById(secaoId);
+    const secao = await this.secaoRepository.findById("" + secaoId);
     if (!secao) {
       throw new Error("Seção não encontrada.");
     }
@@ -37,8 +37,24 @@ export class VotoService {
       throw new Error("Candidato não encontrado.");
     }
 
-    // Adicionar o voto
-    await this.votoRepository.create({ secao, quantidade, candidato });
+    // Verificar se o voto já existe
+    const existingVote = await this.votoRepository.findByCandidatoAndSecao(
+      candidatoId,
+      secaoId
+    );
+
+    if (existingVote) {
+      // Atualiza a quantidade se já existir
+      existingVote.quantidade = quantidade;
+      await this.votoRepository.update(existingVote);
+    } else {
+      // Cria um novo registro se não existir
+      await this.votoRepository.create({
+        secao,
+        quantidade,
+        candidato,
+      });
+    }
   }
 
   async addVotes(
