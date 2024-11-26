@@ -41,9 +41,6 @@ export class VotoController {
     try {
       const { votos } = req.body;
 
-      console.log(votos);
-      
-
       // Validação básica
       if (!votos || !Array.isArray(votos) || votos.length === 0) {
         return res.status(400).json({
@@ -60,9 +57,6 @@ export class VotoController {
           });
         }
       }
-
-      console.log(votos[0]);
-      
 
       // Adicionar votos
       await votoService.addVotes(votos);
