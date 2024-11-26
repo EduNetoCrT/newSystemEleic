@@ -41,6 +41,9 @@ export class VotoController {
     try {
       const { votos } = req.body;
 
+      console.log(votos);
+      
+
       // Validação básica
       if (!votos || !Array.isArray(votos) || votos.length === 0) {
         return res.status(400).json({
@@ -50,13 +53,16 @@ export class VotoController {
 
       // Validar estrutura de cada voto
       for (const voto of votos) {
-        if (!voto.secaoId || !voto.quantidade || !voto.candidatoId) {
+        if (!voto.secaoId || !voto.quantidade && voto.quantidade < 0 || !voto.candidatoId) {         
           return res.status(400).json({
             message:
               "Cada voto deve conter os campos secaoId, quantidade e candidatoId.",
           });
         }
       }
+
+      console.log(votos[0]);
+      
 
       // Adicionar votos
       await votoService.addVotes(votos);
