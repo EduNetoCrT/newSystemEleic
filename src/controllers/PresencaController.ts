@@ -55,8 +55,9 @@ export class PresencaController {
     // Cria uma nova presença utilizando o local da sessão
     createPresenca = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { local, eleitorMatricula } = req.body;
-            const newPresenca = await this.presencaService.createPresenca(local, eleitorMatricula);
+            const { secaoId, eleitorMatricula } = req.body;
+            
+            const newPresenca = await this.presencaService.createPresenca(secaoId, eleitorMatricula);
 
             // Atualização para incluir o nome da sessão na resposta
             res.status(201).json({
