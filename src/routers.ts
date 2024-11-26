@@ -24,10 +24,10 @@ const authController = new AuthController();
 
 // Rota para login
 router.post("/login", authController.login); // Adicionando a rota de login
+router.post("/users", UserController.createUser);
 
 // Rotas para User
 authenticatedRoutes.get("/users", UserController.getAllUsers);
-authenticatedRoutes.post("/users", UserController.createUser);
 authenticatedRoutes.delete("/users/:id", UserController.deleteUser);
 authenticatedRoutes.get("/profile", UserController.getUserProfile);
 
