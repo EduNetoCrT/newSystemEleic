@@ -23,7 +23,7 @@ export default class AuthController {
       const token = jwt.sign(
         { id: user.id, email: user.email, name: user.name, secao: user.secao },
         process.env.JWT_SECRET!,
-        { expiresIn: '1h' }
+        { expiresIn: '12h' }
       );
 
       return res.status(200).json({ message: "Login bem-sucedido", token });
