@@ -24,6 +24,7 @@ export class ResultadoService {
         );
 
         return {
+          id: candidato.id, // Incluímos o ID do candidato
           candidato: candidato.nome,
           funcao: candidato.funcao,
           votosPorSecao,

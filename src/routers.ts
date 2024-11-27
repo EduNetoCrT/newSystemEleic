@@ -32,7 +32,7 @@ authenticatedRoutes.delete("/users/:id", UserController.deleteUser);
 authenticatedRoutes.get("/profile", UserController.getUserProfile);
 
 // Rotas para Eleitor
-authenticatedRoutes.get("/eleitores", eleitorController.getAllEleitores);
+router.get("/eleitores", eleitorController.getAllEleitores);
 authenticatedRoutes.get("/eleitores/:matricula", eleitorController.getEleitorByMatricula);
 authenticatedRoutes.post("/eleitores", eleitorController.createEleitor);
 authenticatedRoutes.put("/eleitores/:matricula", eleitorController.updateEleitor);
